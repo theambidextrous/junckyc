@@ -30,6 +30,9 @@ function getMovies($id = 0){
         return $arrr;
     }
 }
+function getShowtimes($movieid){
+    return $shows;
+}
 
 
 ?>
