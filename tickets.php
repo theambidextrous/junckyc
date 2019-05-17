@@ -1,9 +1,9 @@
 
 <?php
 require_once('config/config.php');
-$movie_data = getMovies($_REQUEST['id']);
-$_SESSION['MOVIE'] = $_REQUEST['id'];
-//print_r($movie_data);
+$ticketsData = getTickets($_REQUEST['show'])[0];
+$_SESSION['SHOW'] = $_REQUEST['show'];
+//print_r($ticketsData);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,11 +15,10 @@ $_SESSION['MOVIE'] = $_REQUEST['id'];
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title><?=SYSTEM_NAME . ' | '.$movie_data['Title']?></title>
+  <title><?=SYSTEM_NAME?> | Select Tickets</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
   <!-- Custom styles for this template -->
   <link href="css/business-frontpage.css" rel="stylesheet">
 <style>
@@ -48,94 +47,39 @@ $_SESSION['MOVIE'] = $_REQUEST['id'];
   <!-- title -->
     <div class="row">
         <div class="col-md-12 mb-5">
-            <h2><?=$movie_data['Title']?></h2>
+            <h2>Select Tickets</h2>
         <hr>
         </div>
     </div>
-<!-- movie info  -->
-    <div class="row">
-      <div class="col-md-6 mb-5">
-        <div class="embed-responsive embed-responsive-16by9">
-            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/<?=$movie_data['Trailer']?>?rel=0" allowfullscreen></iframe>
+<!-- tickets info  -->
+    <div class="row" style="min-height:500px;">
+      <div class="col-md-12 mb-5">
+      <form>
+        <div class="form-group">
+            <input type="hidden" name="ticketid" value="<?=$ticketsData['TicketId']?>"/>
+            <input type="hidden" name="showid" value="<?=$_SESSION['SHOW']?>"/>
+            <label for="exampleFormControlSelect1">Ticket Name: <b><?=$ticketsData['TicketName']?></b> <br>Price: <b>KES <?=$ticketsData['TicketPrice']?></b></label>
+            <select name="quantity" class="form-control" id="exampleFormControlSelect1">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            </select>
         </div>
-      </div>
+        <div class="form-group">
+            <button name="next" type="submit" class="btn btn-warning mb-2">Select seats</button>
+        </div>
 
-      <div class="col-md-6 mb-5">
-        <address>
-            <h2>Movie Meta Information</h2>
-            <br>Written By : <br><b><?=$movie_data['Writers']?></b>
-            <br>Directed By : <br><b><?=$movie_data['Directors']?></b>
-            <br>Rating : <br><b><?=$movie_data['Ratings']?></b>
-            <abbr title="Phone">Released:</abbr><br>
-            <b><?=date('M jS, Y', strtotime($movie_data['ReleaseDate']))?></b><br>
-            <abbr title="Phone">Cast:</abbr><br>
-            <b><?=$movie_data['Cast']?></b>
-            <br>
-        </address>
+    </form>
       </div>
-
     </div>
     <!-- /.row -->
-    <!-- plot -->
-    <div class="row">
-        <div class="col-md-12 mb-5">
-        <h2>Plot</h2>
-            <p><?=$movie_data['Plot']?></p>
-        <hr>
-        </div>
-    </div>
-    <!-- show times -->
-    <div class="row">
-        <div class="col-md-12 mb-5">
-        <h2>Showtimes</h2><br>
-        <?php 
-        $show_dates = explode(',', getShowDates($_REQUEST['id'])['dates']);
-        //print_r($show_dates);
-        foreach( $show_dates as $sd ):
-            print '<p><b>'.date('M jS, Y', strtotime($sd)).'</b></p><p><div class="btn-group">';
-            $times = getShowtimes($_REQUEST['id'], $sd);
-            foreach( $times as $t ):
-        ?>
-           <a href="tickets.php?show=<?=$t['ShowtimeId']?>" style="margin-right: 6px;" class="btn btn-warning">Buy tickets for <?=date('h:i a', strtotime($t['Time']))?></a>
-            <?php 
-            endforeach;
-            ?>
-        </div></p><hr>
-        <?php 
-            endforeach;
-        ?>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12 mb-5">
-        <h2>Related Movies</h2>
-        </div>
-    <?php 
-    $movies_data = getMovies();
-    foreach( $movies_data as $md ):
-        if($md['MovieId'] == $_REQUEST['id']){
-
-        }else{
-    ?>
-      <div class="col-md-2 mb-5">
-        <div class="card h-100">
-          <img class="card-img-top" src="images/movies/<?=$md['Banner']?>" alt="">
-          <div class="card-body">
-            
-            <p class="card-text"><?=ucwords($md['Title'])?></p>
-          </div>
-          <div class="card-footer">
-            <a href="movie_details.php?id=<?=$md['MovieId']?>" class="btn btn-primary">Showtimes</a>
-          </div>
-        </div>
-      </div>
-      <?php 
-        }
-      endforeach ; 
-      ?>
-    </div>
-    <!-- /.row -->
-
   </div>
   <!-- /.container -->
 <?php

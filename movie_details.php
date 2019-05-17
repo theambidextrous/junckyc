@@ -135,7 +135,6 @@ $_SESSION['MOVIE'] = $_REQUEST['id'];
       ?>
     </div>
     <!-- /.row -->
-
   </div>
   <!-- /.container -->
 <?php

@@ -1,5 +1,6 @@
 <?php
 //constant
+session_start();
 define('SYSTEM_NAME', 'Junky Cinema');
 define('SYSTEM_TAGLINE', 'The ultimate leading platform for online movie booking');
 define('BASE_URL', 'http://localhost/imovies/');
@@ -45,6 +46,16 @@ function getShowDates($movieid){
         $resp = mysqli_query( connection(), $query);
         $data = $resp->fetch_assoc();
         return $data;
+}
+function getTickets($showid){
+    $arrr = [];
+    $query = "SELECT `TicketId`, `TicketName`, `TicketPrice`, `TicketMax`, `Status`, `ShowtimeId` FROM `ticket` WHERE `ShowtimeId` = '$showid'";
+    $resp = mysqli_query( connection(), $query);
+    while($data = $resp->fetch_assoc()){
+        array_push($arrr, $data);
+    }
+
+    return $arrr; 
 }
 
 
