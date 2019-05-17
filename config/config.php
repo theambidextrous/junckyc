@@ -30,8 +30,21 @@ function getMovies($id = 0){
         return $arrr;
     }
 }
-function getShowtimes($movieid){
-    return $shows;
+function getShowtimes($movieid, $day){
+    $arrr = [];
+        $query = "SELECT `ShowtimeId`, `Date`, `Time`, `Status`, `MovieId`, `HallId` FROM `showtime` WHERE `MovieId` = '$movieid' AND `Date` = '$day'";
+        $resp = mysqli_query( connection(), $query);
+        while($data = $resp->fetch_assoc()){
+            array_push($arrr, $data);
+        }
+
+        return $arrr;
+}
+function getShowDates($movieid){
+        $query = "SELECT GROUP_CONCAT(DISTINCT(`Date`)) as dates FROM `showtime` WHERE `MovieId` = '$movieid' order by Date asc ";
+        $resp = mysqli_query( connection(), $query);
+        $data = $resp->fetch_assoc();
+        return $data;
 }
 
 

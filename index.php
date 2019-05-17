@@ -94,7 +94,7 @@ require_once('config/config.php');
             <p class="card-text"><?=ucwords($md['Title'])?></p>
           </div>
           <div class="card-footer">
-            <a href="#" class="btn btn-primary">Showtimes</a>
+            <a href="movie_details.php?id=<?=$md['MovieId']?>" class="btn btn-primary">Showtimes</a>
           </div>
         </div>
       </div>

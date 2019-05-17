@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 4.7.4
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: May 16, 2019 at 06:22 PM
--- Server version: 10.1.39-MariaDB
--- PHP Version: 7.1.29
+-- Host: 127.0.0.1:3306
+-- Generation Time: May 17, 2019 at 10:31 AM
+-- Server version: 5.7.19
+-- PHP Version: 5.6.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -25,24 +25,18 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `booking`
---
--- Error reading structure for table imovies.booking: #1932 - Table 'imovies.booking' doesn't exist in engine
--- Error reading data for table imovies.booking: #1064 - You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'FROM `imovies`.`booking`' at line 1
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `customer`
 --
 
-CREATE TABLE `customer` (
+DROP TABLE IF EXISTS `customer`;
+CREATE TABLE IF NOT EXISTS `customer` (
   `CustomerId` varchar(50) NOT NULL,
   `Username` varchar(50) NOT NULL,
   `EmailAddress` varchar(50) NOT NULL,
   `Password` varchar(200) NOT NULL,
   `PhoneNumber` varchar(50) NOT NULL,
-  `Status` varchar(50) NOT NULL
+  `Status` varchar(50) NOT NULL,
+  PRIMARY KEY (`CustomerId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -51,12 +45,22 @@ CREATE TABLE `customer` (
 -- Table structure for table `hall`
 --
 
-CREATE TABLE `hall` (
+DROP TABLE IF EXISTS `hall`;
+CREATE TABLE IF NOT EXISTS `hall` (
   `HallId` varchar(50) NOT NULL,
   `Name` varchar(50) NOT NULL,
   `Capacity` int(200) NOT NULL,
-  `Status` varchar(200) NOT NULL
+  `Status` varchar(200) NOT NULL,
+  PRIMARY KEY (`HallId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `hall`
+--
+
+INSERT INTO `hall` (`HallId`, `Name`, `Capacity`, `Status`) VALUES
+('1', 'Scree 1', 50, '1'),
+('2', 'Screen 2', 40, '1');
 
 -- --------------------------------------------------------
 
@@ -64,8 +68,9 @@ CREATE TABLE `hall` (
 -- Table structure for table `movies`
 --
 
-CREATE TABLE `movies` (
-  `MovieId` int(50) NOT NULL,
+DROP TABLE IF EXISTS `movies`;
+CREATE TABLE IF NOT EXISTS `movies` (
+  `MovieId` int(50) NOT NULL AUTO_INCREMENT,
   `Title` varchar(50) NOT NULL,
   `Banner` varchar(50) NOT NULL,
   `Plot` varchar(500) NOT NULL,
@@ -75,8 +80,9 @@ CREATE TABLE `movies` (
   `Cast` varchar(200) NOT NULL,
   `ReleaseDate` date NOT NULL,
   `Ratings` varchar(200) NOT NULL,
-  `Status` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `Status` varchar(50) NOT NULL,
+  PRIMARY KEY (`MovieId`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `movies`
@@ -96,13 +102,17 @@ INSERT INTO `movies` (`MovieId`, `Title`, `Banner`, `Plot`, `Trailer`, `Writers`
 -- Table structure for table `seats`
 --
 
-CREATE TABLE `seats` (
+DROP TABLE IF EXISTS `seats`;
+CREATE TABLE IF NOT EXISTS `seats` (
   `SeatId` varchar(50) NOT NULL,
   `Row` varchar(200) NOT NULL,
   `Columns` varchar(200) NOT NULL,
   `Label` varchar(200) NOT NULL,
   `Status` varchar(200) NOT NULL,
-  `HallId` varchar(50) NOT NULL
+  `HallId` varchar(50) NOT NULL,
+  `MaxRow` int(4) NOT NULL,
+  PRIMARY KEY (`SeatId`),
+  KEY `HallId` (`HallId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -111,14 +121,27 @@ CREATE TABLE `seats` (
 -- Table structure for table `showtime`
 --
 
-CREATE TABLE `showtime` (
+DROP TABLE IF EXISTS `showtime`;
+CREATE TABLE IF NOT EXISTS `showtime` (
   `ShowtimeId` varchar(50) NOT NULL,
   `Date` date NOT NULL,
   `Time` time(6) NOT NULL,
   `Status` varchar(50) NOT NULL,
   `MovieId` int(50) NOT NULL,
-  `HallId` varchar(50) NOT NULL
+  `HallId` varchar(50) NOT NULL,
+  PRIMARY KEY (`ShowtimeId`),
+  KEY `MovieId` (`MovieId`),
+  KEY `HallId` (`HallId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `showtime`
+--
+
+INSERT INTO `showtime` (`ShowtimeId`, `Date`, `Time`, `Status`, `MovieId`, `HallId`) VALUES
+('1', '2019-05-28', '16:30:00.000000', '1', 1, '2'),
+('2', '2019-05-29', '17:30:00.000000', '1', 1, '1'),
+('3', '2019-05-29', '20:30:00.000000', '1', 1, '1');
 
 -- --------------------------------------------------------
 
@@ -126,68 +149,25 @@ CREATE TABLE `showtime` (
 -- Table structure for table `ticket`
 --
 
-CREATE TABLE `ticket` (
+DROP TABLE IF EXISTS `ticket`;
+CREATE TABLE IF NOT EXISTS `ticket` (
   `TicketId` varchar(50) NOT NULL,
   `TicketName` varchar(50) NOT NULL,
   `TicketPrice` double NOT NULL,
   `TicketMax` varchar(50) NOT NULL,
   `Status` varchar(50) NOT NULL,
-  `ShowtimeId` varchar(50) NOT NULL
+  `ShowtimeId` varchar(50) NOT NULL,
+  PRIMARY KEY (`TicketId`),
+  KEY `ShowtimeId` (`ShowtimeId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Indexes for dumped tables
+-- Dumping data for table `ticket`
 --
 
---
--- Indexes for table `customer`
---
-ALTER TABLE `customer`
-  ADD PRIMARY KEY (`CustomerId`);
-
---
--- Indexes for table `hall`
---
-ALTER TABLE `hall`
-  ADD PRIMARY KEY (`HallId`);
-
---
--- Indexes for table `movies`
---
-ALTER TABLE `movies`
-  ADD PRIMARY KEY (`MovieId`);
-
---
--- Indexes for table `seats`
---
-ALTER TABLE `seats`
-  ADD PRIMARY KEY (`SeatId`),
-  ADD KEY `HallId` (`HallId`);
-
---
--- Indexes for table `showtime`
---
-ALTER TABLE `showtime`
-  ADD PRIMARY KEY (`ShowtimeId`),
-  ADD KEY `MovieId` (`MovieId`),
-  ADD KEY `HallId` (`HallId`);
-
---
--- Indexes for table `ticket`
---
-ALTER TABLE `ticket`
-  ADD PRIMARY KEY (`TicketId`),
-  ADD KEY `ShowtimeId` (`ShowtimeId`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `movies`
---
-ALTER TABLE `movies`
-  MODIFY `MovieId` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+INSERT INTO `ticket` (`TicketId`, `TicketName`, `TicketPrice`, `TicketMax`, `Status`, `ShowtimeId`) VALUES
+('1', 'Juncky Premium', 2000, '10', '1', '2'),
+('2', 'Juncky Regular', 1500, '10', '1', '1');
 
 --
 -- Constraints for dumped tables
